@@ -1,0 +1,135 @@
+{% extends 'base.html.twig' %}
+
+{% block head %}
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+<script>
+  var today = new Date();
+  var exclude = ["25-12-2018", "01-01-2018", "02-04-2019", "01-05-2019", "08-05-2019", "10-05-2019", "21-05-2019", "14-07-2019", "15-08-2019", "01-11-2019", "11-11-2019", "25-12-2019"]
+
+  $(document).ready(function() {
+    $('#calendar').datepicker({
+      beforeShowDay: function(date) {
+        var day = jQuery.datepicker.formatDate('dd-mm-yy', date);
+        return [!~$.inArray(day, exclude) && (date.getDay() != 0)];
+      },
+      minDate: today
+    });
+  });
+</script>
+
+{% endblock %}
+
+{% block body %}
+
+{# Exposition #}
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-1"></div>
+        <div class="col-md-10">
+
+            <div class="card mb-3">
+                <h3 class="card-header">Exposition Un rêve d'Italie.</h3>
+                <div class="card-body">
+                    <h5 class="card-title">La collection du marquis Campana.</h5>
+                    <h6 class="card-subtitle text-muted">Du 7 novembre 2018 au 18 février 2019</h6>
+                </div>
+            </div>
+            <img style="height: 200px; width: 100%; display: block;" alt="Card image" src="campana.jpg">
+
+        </div>
+        <div class="col-md-1"></div>
+    </div>    
+
+    <div class="row">
+        <div class="col-md-3"></div>
+            <div class="col-md-6">
+
+  {# Mail #}
+  <form action="{{ path('ticket_detail') }}" method="post">
+    <div class="form-group">
+      <legend>Adresse mail</legend>
+      <input class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" type="email" placeholder="Entrez votre adresse" name="test">
+      <small class="form-text text-muted" id="emailHelp">Nous ne partagerons pas votre mail.</small>
+    </div>
+  
+
+  {# Calendrier #}
+    <div>
+      <legend>Calendrier</legend>
+      {# <input type="date" id="start" name="trip-start" value="22-11-2018" min="01-01-2018" max="31-12-2018"> #}
+      <input type="text" id="calendar"/>
+      <p>Le musée est fermé tous les mardi ainsi que le 1er mai, le 1er novembre et le 25 décembre.<br>
+      La réservation en ligne n'est pas disponible pour les dimanche ainsi que les jours fériés ainsi que les jours de grosse affluence.</p>
+    </div>
+
+  {# Horaire #}
+    <fieldset class="form-group">
+    <legend>Horaire</legend>
+    <div class="form-check">
+      <label class="form-check-label">
+        <input name="optionsRadios" class="form-check-input" id="optionsRadios1" type="radio" checked="" value="option1">
+        Journée (9h)
+      </label>
+    </div>
+  <div class="form-check">
+    <label class="form-check-label">
+        <input name="optionsRadios" class="form-check-input" id="optionsRadios2" type="radio" value="option2">
+        Demi-journée (14h)
+      </label>
+    </div>
+  </fieldset>
+
+  {# Tarifs #}
+  <div class="form-group">
+    <legend>Tarifs</legend>
+    <label for="normal">Tarif "normal". <b>16€</b></label>
+    <select class="form-control" id="normal" name="normal">
+      <option value="0">0</option>
+      <option value="1">1</option>
+      <option value="2">2</option>
+      <option value="3">3</option>
+      <option value="4">4</option>
+      <option value="5">5</option>
+      <option value="6">6</option>
+    </select>
+  </div>
+  <div class="form-group">
+    <label for="enfant">Tarif "enfant" (4 à 12 ans), gratuit pour les moins de 4 ans. <b>8€</b></label>
+    <select class="form-control" id="enfant" name="enfant">
+      <option value="0">0</option>
+      <option value="1">1</option>
+      <option value="2">2</option>
+      <option value="3">3</option>
+      <option value="4">4</option>
+      <option value="5">5</option>
+      <option value="6">6</option>
+    </select>
+  </div>
+  <div class="form-group">
+    <label for="senior">Tarif "Senior" (60 ans). <b>12€</b></label>
+    <select class="form-control" id="senior" name="senior">
+      <option value="0">0</option>
+      <option value="1">1</option>
+      <option value="2">2</option>
+      <option value="3">3</option>
+      <option value="4">4</option>
+      <option value="5">5</option>
+      <option value="6">6</option>
+    </select>
+  </div>
+
+  <p>Au-delà de 6 billets, contactez le louvre pour un tarif de groupe. </p>
+
+  <div></div>
+    <button type="submit" class="btn btn-primary btn-lg">Suivant</button>
+  </div>
+</form>
+      </div>
+    <div class="col-md-3"></div>
+  </div>
+</div>
+{% endblock %}
