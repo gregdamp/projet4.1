@@ -2,12 +2,15 @@
 
 {% block head %}
 
-
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
 
 {% endblock %}
 
 {% block body %}
 
+<h4>TEST</h4>
 <h2>Billets normaux</h2>
  <ul>
      {% set i = "" %}
@@ -213,7 +216,7 @@
                             <option value="Zimbabwe">Zimbabwe</option>
                             </select>
                         Date de naissance: <input type="date" name="naissance">
-                        <input type="checkbox" name="reduction" value="reduction"> Tarif réduit<br>
+                        <input type="checkbox" name="reduction" value="reduction" class="reductionNormal"> Tarif réduit<br>
             </li>
         {%  endif %}
         {%- if i == app.request.request.get('normal') %}        
@@ -222,7 +225,7 @@
     {% endfor %}  
 </ul>
 
-<p>Total: {{ normalPrice }}</p>
+<p id="normalPrice">Total: <span id="normalId">{{ normalPrice }}</span></p>
 
 <h2>Billets enfants</h2>
  <ul>
@@ -429,7 +432,7 @@
                             <option value="Zimbabwe">Zimbabwe</option>
                             </select>
                         Date de naissance: <input type="date" name="naissance">
-                        <input type="checkbox" name="reduction" value="reduction"> Tarif réduit<br>
+                        
             </li>            
 
          {%  endif %}
@@ -439,7 +442,7 @@
      {% endfor %}
  </ul>
 
- <p>Total: {{ enfantPrice }}</p>
+ <p>Total: <span id="enfantId">{{ enfantPrice }}</span></p>
 
 <h2>Billets senior</h2>
  <ul>
@@ -646,7 +649,7 @@
                             <option value="Zimbabwe">Zimbabwe</option>
                             </select>
                         Date de naissance: <input type="date" name="naissance">
-                        <input type="checkbox" name="reduction" value="reduction"> Tarif réduit<br>
+                        <input type="checkbox" name="reduction" value="reduction" class="reductionSenior"> Tarif réduit<br>
             </li>
         {%  endif %}
         {%- if i == app.request.request.get('senior') %}        
@@ -655,22 +658,33 @@
     {% endfor %}
 </ul>
 
-<p>Total: {{ seniorPrice }}</p>
 
-<p>Prix total:
-    {% if normalPrice == 0 and enfantPrice > 0 and seniorPrice > 0 %}
-        {{ enfantPrice + seniorPrice }} 
-    {% elseif enfantPrice == 0 and normalPrice > 0 and seniorPrice > 0  %}
-        {{ normalPrice + seniorPrice }} 
-    {% elseif seniorPrice == 0 and enfantPrice > 0 and normalPrice > 0 %}
-        {{ normalPrice + enfantPrice }}
-    {% elseif seniorPrice == 0 and enfantPrice == 0 and normalPrice > 0 %}
-        {{ normalPrice }}
-    {% elseif seniorPrice == 0 and normalPrice == 0 and enfantPrice > 0 %}
-        {{ enfantPrice }}
-    {% elseif normalPrice == 0 and enfantPrice == 0 and seniorPrice > 0 %}
-        {{ seniorPrice }}
-    {% else %} 
-        {{ normalPrice + enfantPrice + seniorPrice }}
-    {% endif %}</p>
+<p>Total: <span id="seniorId">{{ seniorPrice }}</span></p>
+
+<p class="total"></p>
+
+<script>
+$(document).ready(function(){
+    function Prix() {
+        var sousTot = parseInt($("#seniorId").text(), 10) + parseInt($("#enfantId").text(), 10) + parseInt($("#normalId").text(), 10);
+        var compteurNormal = 0;
+        $('.reductionNormal:checkbox:checked').each(function(){
+            compteurNormal++;
+        });
+        var compteurSenior = 0;
+        $('.reductionSenior:checkbox:checked').each(function(){
+            compteurSenior++;
+        });
+        var Tot = sousTot - ((compteurNormal * 6) + (compteurSenior * 2));
+        $( "p.total" ).text("Prix total: " + Tot);
+    }
+    
+    Prix();
+
+    $(':checkbox').change(function() {
+        Prix();
+    });
+});
+</script>
+
 {% endblock %}

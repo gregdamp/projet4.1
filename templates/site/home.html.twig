@@ -7,7 +7,7 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
 <script>
   var today = new Date();
-  var exclude = ["25-12-2018", "01-01-2018", "02-04-2019", "01-05-2019", "08-05-2019", "10-05-2019", "21-05-2019", "14-07-2019", "15-08-2019", "01-11-2019", "11-11-2019", "25-12-2019"]
+  var exclude = ["{% for row in SoldOutDate %}{{row.date|date('d-m-Y')}}{{ not loop.last ? '\",\"' }}{% endfor %}", "25-12-2018", "01-01-2018", "02-04-2019", "01-05-2019", "08-05-2019", "10-05-2019", "21-05-2019", "14-07-2019", "15-08-2019", "01-11-2019", "11-11-2019", "25-12-2019"]
 
   $(document).ready(function() {
     $('#calendar').datepicker({
@@ -15,7 +15,26 @@
         var day = jQuery.datepicker.formatDate('dd-mm-yy', date);
         return [!~$.inArray(day, exclude) && (date.getDay() != 0)];
       },
-      minDate: today
+      minDate: today,
+      onSelect: function(date, instance) {
+        $.ajax({
+          url : 'home',
+          type : 'POST',
+          data : {'date':date},
+          dataType : 'html',
+          success : function(code_html, statut){
+            console.log(statut);
+          },
+ 
+          error : function(resultat, statut, erreur){
+          
+          },
+ 
+          complete : function(resultat, statut){
+ 
+          }          
+        });
+      }
     });
   });
 </script>
@@ -25,7 +44,6 @@
 {% block body %}
 
 {# Exposition #}
-
 <div class="container">
     <div class="row">
         <div class="col-md-1"></div>
@@ -48,6 +66,8 @@
         <div class="col-md-3"></div>
             <div class="col-md-6">
 
+
+
   {# Mail #}
   <form action="{{ path('ticket_detail') }}" method="post">
     <div class="form-group">
@@ -56,7 +76,7 @@
       <small class="form-text text-muted" id="emailHelp">Nous ne partagerons pas votre mail.</small>
     </div>
   
-
+  <input type="hidden" id="nombreBillets" name="NombreBillets" value="{{ TicketsDate }}">
   {# Calendrier #}
     <div>
       <legend>Calendrier</legend>
@@ -71,8 +91,10 @@
     <legend>Horaire</legend>
     <div class="form-check">
       <label class="form-check-label">
-        <input name="optionsRadios" class="form-check-input" id="optionsRadios1" type="radio" checked="" value="option1">
-        Journée (9h)
+        {% if "now"|date("H:i:s", "Europe/Paris") <= "14:00:00"  %}
+          <input name="optionsRadios" class="form-check-input" id="optionsRadios1" type="radio" checked="" value="option1">
+          Journée (9h)
+        {% endif %}
       </label>
     </div>
   <div class="form-check">
@@ -82,43 +104,53 @@
       </label>
     </div>
   </fieldset>
+  <small class="form-text text-muted" id="emailHelp">Il n'est plus possible de réserver de billets "journée" après 14h.</small>
+</br>
 
   {# Tarifs #}
   <div class="form-group">
     <legend>Tarifs</legend>
     <label for="normal">Tarif "normal". <b>16€</b></label>
-    <select class="form-control" id="normal" name="normal">
-      <option value="0">0</option>
-      <option value="1">1</option>
-      <option value="2">2</option>
-      <option value="3">3</option>
-      <option value="4">4</option>
-      <option value="5">5</option>
-      <option value="6">6</option>
+    <select class="form-control select" id="normal" name="normal" class="select">
+      {% if TicketsDate > 5 %}
+        {% for normal in range(0, 6) %}
+          <option value="{{ normal }}">{{ normal }}</option>
+        {% endfor %}
+      {% else %}
+        {% for normal in range (0, TicketsDate) %}
+          <option value="{{ normal }}">{{ normal }}</option>
+        {% endfor %}
+      {% endif %}
     </select>
   </div>
+
   <div class="form-group">
     <label for="enfant">Tarif "enfant" (4 à 12 ans), gratuit pour les moins de 4 ans. <b>8€</b></label>
-    <select class="form-control" id="enfant" name="enfant">
-      <option value="0">0</option>
-      <option value="1">1</option>
-      <option value="2">2</option>
-      <option value="3">3</option>
-      <option value="4">4</option>
-      <option value="5">5</option>
-      <option value="6">6</option>
+    <select class="form-control select" id="enfant" name="enfant" class="select">
+      {% if TicketsDate > 5 %}
+        {% for enfant in range(0, 6) %}
+          <option value="{{ enfant }}">{{ enfant }}</option>
+        {% endfor %}
+      {% else %}
+        {% for enfant in range (0, TicketsDate) %}
+          <option value="{{ enfant }}">{{ enfant }}</option>
+        {% endfor %}
+      {% endif %}
     </select>
   </div>
+
   <div class="form-group">
     <label for="senior">Tarif "Senior" (60 ans). <b>12€</b></label>
-    <select class="form-control" id="senior" name="senior">
-      <option value="0">0</option>
-      <option value="1">1</option>
-      <option value="2">2</option>
-      <option value="3">3</option>
-      <option value="4">4</option>
-      <option value="5">5</option>
-      <option value="6">6</option>
+    <select class="form-control select" id="senior" name="senior">
+      {% if TicketsDate > 5 %}
+        {% for senior in range(0, 6) %}
+          <option value="{{ senior }}">{{ senior }}</option>
+        {% endfor %}
+      {% else %}
+        {% for senior in range (0, TicketsDate) %}
+          <option value="{{ senior }}">{{ senior }}</option>
+        {% endfor %}
+      {% endif %}      
     </select>
   </div>
 
@@ -132,4 +164,44 @@
     <div class="col-md-3"></div>
   </div>
 </div>
+
+<script>
+
+  var TicketsDate = '{{ TicketsDate }}';
+  var max;
+
+  if(TicketsDate > 5) {
+    max = 6;
+  }
+    
+  else {
+    max = TicketsDate;
+  }
+    
+  $( document ).ready(function() {   
+    $(".select").change(function(){
+    
+      //reset
+      for (var i = max; i >= 0; i--) {
+        $("#normal option[value='"+i+"']").show();
+        $("#enfant option[value='"+i+"']").show();
+        $("#senior option[value='"+i+"']").show();
+      }
+    
+      //hide unwanted values depending on other selects
+      for (var i = max; i > (max - (parseInt($( "#enfant" ).val()) + parseInt($( "#senior" ).val()))); i--) {
+        $("#normal option[value='"+i+"']").hide();
+      }
+    
+      for (var i = max; i > (max - (parseInt($( "#normal" ).val()) + parseInt($( "#senior" ).val()))); i--) {
+        $("#enfant option[value='"+i+"']").hide();
+      }
+    
+      for (var i = max; i > (max - (parseInt($( "#enfant" ).val()) + parseInt($( "#normal" ).val()))); i--) {
+        $("#senior option[value='"+i+"']").hide();
+      }
+    });
+  });
+
+</script>
 {% endblock %}

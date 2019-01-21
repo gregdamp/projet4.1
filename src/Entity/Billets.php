@@ -17,23 +17,41 @@ class Billets
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="integer")
      */
-    private $type;
+    private $quantite;
+
+    /**
+     * @ORM\Column(type="string")
+     */
+    private $date;
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getType(): ?string
+    public function getQuantite(): ?int
     {
-        return $this->type;
+        return $this->quantite;
     }
 
-    public function setType(string $type): self
+    public function setQuantite(int $quantite): self
     {
-        $this->type = $type;
+        $this->quantite = $quantite;
+
+        return $this;
+    }
+
+    public function getDate(): ?string
+    {
+        return $this->date;
+    }
+
+    public function setDate(string $date): self
+    {
+
+        $this->date = $date;
 
         return $this;
     }
