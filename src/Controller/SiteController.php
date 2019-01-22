@@ -15,6 +15,7 @@ class SiteController extends AbstractController
      * @Route("/site", name="site")
      */
     public function index() {
+
         return $this->render('site/index.html.twig', [
             'controller_name' => 'SiteController',
         ]);
@@ -64,6 +65,28 @@ class SiteController extends AbstractController
      */
     public function detail() {
         return $this->render('site/detail.html.twig');
+    }
+
+    /**
+     * @route("/site/emails", name="emails")
+     */
+    public function emails(\Swift_Mailer $mailer) {
+
+        $message = (new \Swift_Message('Hello Email'))
+        ->setFrom('send@example.com')
+        ->setTo('recipient@example.com')
+        ->setBody(
+            $this->renderView(
+                // templates/emails/registration.html.twig
+                'site/emails.html.twig'
+            ),
+            'text/html'
+        );
+
+        $mailer->send($message);
+
+
+        return $this->render('site/emails.html.twig');
     }
 
 
