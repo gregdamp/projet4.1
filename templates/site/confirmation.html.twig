@@ -1,0 +1,25 @@
+{% extends 'base.html.twig' %}
+
+{% block head %}
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+
+{% endblock %}
+
+{% block body %}
+
+<div class="container">
+    <p>Votre commande a bien été enregistrée, vous allez recevoir un mail de confirmation d'ici quelques instants.</p>
+    <p>Vous allez être redirigé sur la page d'accueil.</p>
+</div>
+
+<script type="text/javascript">
+    function pageRedirect() {
+        window.location.replace("http://127.0.0.1:8000/");
+    }      
+    setTimeout("pageRedirect()", 5000);
+</script>
+
+{% endblock %}

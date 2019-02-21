@@ -1,0 +1,55 @@
+{% block head %}
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+
+{% endblock %}
+
+{% block body %}
+
+<div class="container">
+
+
+<img style="width: 20%;" src="https://upload.wikimedia.org/wikipedia/fr/9/9f/Musee_du_Louvre_1992_logo.png"/><br />
+
+<p>Votre commande a bien été enregistrée.</p>
+<p>Voici la liste de vos billets, veuillez la conserver et l'imprimer afin de la présenter lors de votre présentation au musée du Louvre.</p>
+<p>Votre réservation pour le {{ app.session.get('calendar') }} a bien été enregistrée à l'adresse suivante: {{ app.session.get('mail') }}</p>
+
+<h4>Billets normaux:</h4>
+{% for i in range(1, 6) %}
+    {% if app.session.get('normalName' ~ i) == true %}
+        <li>
+            {{ app.session.get('normalName' ~ i) }}
+        </li>
+    {% endif %}
+{% endfor %}
+
+<h4>Billets enfants:</h4>
+{% for i in range(1, 6) %}
+    {% if app.session.get('childName' ~ i) == true %}
+        <li>
+            {{ app.session.get('childName' ~ i) }}
+        </li>
+    {% endif %}
+{% endfor %}
+
+<h4>Billets seniors:</h4>
+{% for i in range(1, 6) %}
+    {% if app.session.get('seniorName' ~ i) == true %}
+        <li>
+            {{ app.session.get('seniorName' ~ i) }}
+        </li>
+    {% endif %}
+{% endfor %}
+
+<h3>Montant total: {{ app.session.get('price') }}€</h3>
+
+<p>Votre numéro de réservation: xxx-xx-xxx</p>
+
+<img style="width: 5%;" src="https://cdn.shopify.com/growth-tools-assets/qr-code/shopify-faae7065b7b351d28495b345ed76096c03de28bac346deb1e85db632862fd0e4.png"/>
+</div>
+
+
+{% endblock %}
