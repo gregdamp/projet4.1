@@ -17,25 +17,27 @@
       },
       minDate: today,
       onSelect: function(date, instance) {
+        var oldDate = {request : $('#calendar').val()};
+        var testsss = new Date(date);
+        var date = testsss.getFullYear() + '-' + (testsss.getMonth()+1) + '-' + testsss.getDate();
         $.ajax({
-          url : '/',
+          url : "{{path('home')}}",
           type : 'POST',
           data : {
-            'date':date,
-            'name':'alex'
+            date: date
           },
-          dataType : 'json',
+          dataType : 'html',
           success : function(code_html, statut){
-            console.log(statut);
+            console.log(code_html, statut);
           },
  
           error : function(resultat, statut, erreur){
-          
+            console.log(resultat, statut, erreur);
           },
  
           complete : function(resultat, statut){
- 
-          }          
+            console.log(resultat, statut, erreur);
+          }      
         });
       }
     });
@@ -45,6 +47,7 @@
 {% endblock %}
 
 {% block body %}
+{{ TicketsDate }}
 
 {# Exposition #}
 <div class="container">
@@ -83,8 +86,8 @@
   {# Calendrier #}
     <div>
       <legend>Calendrier</legend>
-      {# <input type="date" id="start" name="trip-start" value="22-11-2018" min="01-01-2018" max="31-12-2018"> #}
-      <input type="text" id="calendar" name="calendar" required/>
+
+      <input type="text" id="calendar" name="calendar" required readonly/>
       <p>Le musée est fermé tous les mardi ainsi que le 1er mai, le 1er novembre et le 25 décembre.<br>
       La réservation en ligne n'est pas disponible pour les dimanche ainsi que les jours fériés ainsi que les jours de grosse affluence.</p>
     </div>
@@ -161,6 +164,8 @@
     </select>
   </div>
 
+  <input type="text" id="random" name="code" value="" hidden>
+
   <div class="alert alert-dismissible alert-danger" id="test" style="display:none;">
       <button class="close" type="button" data-dismiss="alert">&times;</button>
       Veuillez sélectionner 1 billet au minimum.
@@ -172,7 +177,6 @@
     <div class="col-md-3"></div>
   </div>
 </div>
-
 
 
 <script>
@@ -235,8 +239,16 @@
     });
   });  
 </script>
-
-
-
+<script>
+  $( document ).ready(function(){
+    var text = "";
+    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    
+    for (var i = 0; i < 5; i++)
+      text += possible.charAt(Math.floor(Math.random() * possible.length));
+    
+    return $( "#random" ).val(text);
+  });
+</script>
 
 {% endblock %}

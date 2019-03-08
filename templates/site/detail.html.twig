@@ -17,13 +17,14 @@
 
     <form action="{{ path('payment') }}" method="post" id="formDetail" name="formDetail" enctype='application/json'>
 
-    <h2>Billets normaux</h2>
-        <div>
+    <h3>Billets normaux</h3>
+        <div class="div-spacer">
             {% set i = "" %}
             {% set normalPrice = 0 %}
             {% for i in range(1, 6) %}
                 {%- if i <= app.request.request.get('normal') %}
-            
+                    <div class="detail-style">
+                            
                             Nom: <input type="text" class="nom" name="nomNormal{{ i }}" required/>
                             Prénom: <input type="text" class="prenom" name="prenomNormal{{ i }}" required/>
                             nationalité: <select class="pays" name="paysNormal{{ i }}">
@@ -222,8 +223,8 @@
                                     <option value="Zimbabwe">Zimbabwe</option>
                                     </select>
                                 Date de naissance: <input type="date" class="naissance" name="naissanceNormal{{ i }}" required/>
-                                <input type="checkbox" name="reductionNormal" value="reduction" class="reductionNormal"> Tarif réduit<br>
-
+                                Tarif réduit: <input type="checkbox" name="reductionNormal" value="reduction" class="reductionNormal"><br>
+                            </div>           
                 {%  endif %}
                 {%- if i == app.request.request.get('normal') %}        
                     {% if app.request.request.get('optionsRadios') == 'option2' %}
@@ -232,19 +233,18 @@
                         {% set normalPrice = 16 * i %}
                     {% endif %}
                 {%  endif %}
-            {% endfor %}  
+            {% endfor %}       
+        </div>                  
+            <p id="normalPrice" class="total-margin">Total billets normaux: <span id="normalId">{{ normalPrice }}€</span></p>
         
 
-            <p id="normalPrice">Total: <span id="normalId">{{ normalPrice }}</span></p>
-        </div> 
-
-    <h2>Billets enfants</h2>
-        <div>
+    <h3>Billets enfants</h3>
+        <div class="div-spacer">
             {% set i = "" %}
             {% set enfantPrice = 0 %}
             {% for i in range(1, 6) %}
                 {%- if i <= app.request.request.get('enfant') %}
-
+                    <div class="detail-style">
                             Nom: <input type="text" class="nom" name="nomEnfant{{ i }}" required/>
                             Prénom: <input type="text" class="prenom" name="prenomEnfant{{ i }}" required/>
                             nationalité: <select class="pays" name="paysEnfant{{ i }}">
@@ -442,26 +442,26 @@
                                     <option value="Zambie">Zambie</option>
                                     <option value="Zimbabwe">Zimbabwe</option>
                                     </select>
-                                Date de naissance: <input type="date" class="naissance" name="naissanceEnfant{{ i }}" required>
+                                Date de naissance: <input type="date" class="naissance" name="naissanceEnfant{{ i }}" required><br>
                                 
                             
-
+                            </div>
                 {%  endif %}
                 {%- if i == app.request.request.get('enfant') %}        
                     {% set enfantPrice = 8 * i %}
                 {%  endif %}
             {% endfor %}
+        </div>  
+            <p class="total-margin">Total billet(s) enfant(s): <span id="enfantId">{{ enfantPrice }}€</span></p>
+                
 
-            <p>Total: <span id="enfantId">{{ enfantPrice }}</span></p>
-        </div>
-
-    <h2>Billets senior</h2>
-        <div>
+    <h3>Billets senior</h3>
+        <div class="div-spacer">
             {% set i = "" %}
             {% set seniorPrice = 0 %}
             {% for i in range(1, 6) %}
                 {%- if i <= app.request.request.get('senior') %}
-
+                    <div class="detail-style">
                             Nom: <input type="text" class="nom" name="nomSenior{{ i }}" required/>
                             Prénom: <input type="text" class="prenom" name="prenomSenior{{ i }}" required/>
                             nationalité: <select class="pays" name="paysSenior{{ i }}">
@@ -660,8 +660,8 @@
                                     <option value="Zimbabwe">Zimbabwe</option>
                                     </select>
                                 Date de naissance: <input type="date" class="naissance" name="naissanceSenior{{ i }}" required>
-                                <input type="checkbox" name="reductionSenior" value="reduction" class="reductionSenior"> Tarif réduit<br>
-                    
+                                Tarif réduit: <input type="checkbox" name="reductionSenior" value="reduction" class="reductionSenior"><br>
+                    </div>
                 {%  endif %}
                 {%- if i == app.request.request.get('senior') %}
                     {% if app.request.request.get('optionsRadios') == 'option2' %}
@@ -671,9 +671,9 @@
                     {% endif %}
                 {%  endif %}
             {% endfor %}
+        </div>  
+            <p class="total-margin">Total billet(s) senior(s): <span id="seniorId">{{ seniorPrice }}€</span></p>
 
-            <p>Total: <span id="seniorId">{{ seniorPrice }}</span></p>
-        </div>
 
         <p class="total"></p>
         <input type="text" class="total" name="hiddenPrice" value="" hidden>
@@ -696,7 +696,7 @@ $(document).ready(function(){
             compteurSenior++;
         });
         var Tot = sousTot - ((compteurNormal * 6) + (compteurSenior * 2));
-        $( "p.total" ).text("Prix total: " + Tot);
+        $( "p.total" ).text("Prix total: " + Tot +"€");
         $( "input.total" ).val(Tot);
     }
     

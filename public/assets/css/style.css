@@ -1,0 +1,52 @@
+.pays
+{
+    width: 10%;
+}
+.div-spacer
+{
+    margin-bottom: 10px;
+}
+@media only screen and (max-width: 1024px) {
+    .nom, .prenom, .pays, .naissance
+    {
+        display: block;
+    }
+    .nom, .prenom, .pays, .naissance
+    {
+        width: 80%;
+    }
+    .detail-style
+    {
+        margin-left:15%;
+        margin-bottom: 20px;
+    }
+    h3, .total-margin
+    {
+        margin-left:10%;
+    }
+    .total
+    {
+        font-weight:bold;
+    }
+}
+
+@media only screen and (max-width: 600px) {
+    .nom, .prenom, .pays, .naissance
+    {
+        display: block;
+    }
+    .detail-style
+    {
+        margin-left:0;
+    }
+    h3, .total-margin
+    {
+        margin-left:0;
+    }
+}
+@media only screen and (max-width: 450px) {
+    .nom, .prenom, .pays, .naissance
+    {
+        width: 100%;
+    }
+}

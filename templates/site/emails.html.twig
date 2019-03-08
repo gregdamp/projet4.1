@@ -46,10 +46,22 @@
 
 <h3>Montant total: {{ app.session.get('price') }}€</h3>
 
-<p>Votre numéro de réservation: xxx-xx-xxx</p>
+<p id="random">Votre numéro de réservation: {{ app.session.get('code') }} </p>
 
 <img style="width: 5%;" src="https://cdn.shopify.com/growth-tools-assets/qr-code/shopify-faae7065b7b351d28495b345ed76096c03de28bac346deb1e85db632862fd0e4.png"/>
 </div>
+
+<script>
+    $( document ).ready(function(){
+      var text = "";
+      var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+      
+      for (var i = 0; i < 5; i++)
+        text += possible.charAt(Math.floor(Math.random() * possible.length));
+      
+      return $( "#random" ).text(text);
+    });
+  </script>
 
 
 {% endblock %}
