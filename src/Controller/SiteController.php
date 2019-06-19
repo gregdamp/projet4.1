@@ -34,18 +34,23 @@ class SiteController extends AbstractController
     public function home(Request $request) {
 
         $date = $request->request->get('date');
+        /* echo '<pre>';
+        print_r($request);
+        echo '</pre>';
+        echo('date='.$date); */
         
 
-        $TicketsDate = $this->getDoctrine()
+        $TicketsStock = $this->getDoctrine()
             ->getRepository('App:Billets')
             ->TicketsByDate($date);
+        //var_dump($TicketsStock);
         
         $SoldOutDate = $this->getDoctrine()
             ->getRepository('App:Billets')
             ->SoldOutDate();
 
         return $this->render('site/home.html.twig', array(
-            'TicketsDate'=>1000 - $TicketsDate, 'SoldOutDate'=> $SoldOutDate) );        
+            'TicketsStock'=>1000 - $TicketsStock, 'SoldOutDate'=> $SoldOutDate) );        
     }
 
     /**

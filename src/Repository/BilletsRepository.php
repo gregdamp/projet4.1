@@ -52,7 +52,7 @@ class BilletsRepository extends ServiceEntityRepository
     public function TicketsByDate($date)
     {
         return $this->createQueryBuilder('billets')
-            ->andWhere('billets.date = :date')
+            ->where('billets.date = :date')
             ->setParameter('date', $date)
             ->select('SUM(billets.quantite) as total')
             ->getQuery()
