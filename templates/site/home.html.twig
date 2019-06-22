@@ -23,9 +23,9 @@
           data : {'date':date},
           dataType : 'html',
           success : function(nbBillets, statut){
-            console.log('reponse serveur ' + nbBillets);
+            console.log('nombre de billets ' + nbBillets);
             //reconstruire la liste drop down
-              if(nbBillets > 5){
+              if(parseInt(nbBillets) > 5){
                     console.log('Rien à faire')
               } else {
                     //supprimer des options en surplus
