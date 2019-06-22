@@ -7,6 +7,8 @@ use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\Billets;
 use App\Repository\BilletsRepository;
 use Doctrine\ORM\EntityManager;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class SiteController extends AbstractController
 
@@ -23,23 +25,13 @@ class SiteController extends AbstractController
     /**
      * @route("/", name="home")
      */
-    public function home() {
+    public function home(Request $request) {
 
-      /*$entityManager = $this->getDoctrine()->getManager();
-
-        $billet = new Billets();
-        $billet->setQuantite(6);
-        $billet->setDate('2018-12-21');
-
-
-        $entityManager->persist($billet);
-
-        $entityManager->flush(); */
-
-        $date;
+        $date = null;
 
         if(isset($_POST['date'])) {
-            $date = $_POST['date'];
+            $strtotime = strtotime($_POST['date']);
+            $date = date('Y-m-d',$strtotime);
         }
         else {
             $date = '2019-01-13';
@@ -54,9 +46,41 @@ class SiteController extends AbstractController
             ->SoldOutDate();
 
         return $this->render('site/home.html.twig', array(
-            'TicketsDate'=>1000 - $TicketsDate, 'SoldOutDate'=> $SoldOutDate) );
+            'TicketsDate'=>1000-$TicketsDate, 'SoldOutDate' => $SoldOutDate) );
         
-        
+    }
+
+    /**
+     * @route("/ajax", name="ajax")
+     */
+    public function ajax(Request $request) {
+
+        $date = null;
+
+        if(isset($_POST['date'])) {
+            $strtotime = strtotime($_POST['date']);
+            $date = date('Y-m-d',$strtotime);
+        }
+        else {
+            $date = '2019-01-13';
+        }
+
+        $TicketsDate = $this->getDoctrine()
+            ->getRepository('App:Billets')
+            ->TicketsByDate($date);
+
+        $SoldOutDate = $this->getDoctrine()
+            ->getRepository('App:Billets')
+            ->SoldOutDate();
+
+        $response = new Response(
+            '3',
+            Response::HTTP_OK,
+            ['content-type' => 'text/html']
+        );
+
+        return $response;
+
     }
 
     /**

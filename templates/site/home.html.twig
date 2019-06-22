@@ -18,12 +18,26 @@
       minDate: today,
       onSelect: function(date, instance) {
         $.ajax({
-          url : 'home',
+          url : '/ajax',
           type : 'POST',
           data : {'date':date},
           dataType : 'html',
-          success : function(code_html, statut){
-            console.log(statut);
+          success : function(nbBillets, statut){
+            console.log('reponse serveur ' + nbBillets);
+            //reconstruire la liste drop down
+              if(nbBillets > 5){
+                    console.log('Rien à faire')
+              } else {
+                    //supprimer des options en surplus
+                  //selection la bonne liste
+                  console.log('processer la liste')
+
+
+                  //effacer les options en surplus
+              }
+
+
+
           },
  
           error : function(resultat, statut, erreur){
@@ -80,7 +94,6 @@
   {# Calendrier #}
     <div>
       <legend>Calendrier</legend>
-      {# <input type="date" id="start" name="trip-start" value="22-11-2018" min="01-01-2018" max="31-12-2018"> #}
       <input type="text" id="calendar"/>
       <p>Le musée est fermé tous les mardi ainsi que le 1er mai, le 1er novembre et le 25 décembre.<br>
       La réservation en ligne n'est pas disponible pour les dimanche ainsi que les jours fériés ainsi que les jours de grosse affluence.</p>
