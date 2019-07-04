@@ -74,7 +74,7 @@ class SiteController extends AbstractController
             ->SoldOutDate();
 
         $response = new Response(
-            '6',
+            1000 - $TicketsDate,
             Response::HTTP_OK,
             ['content-type' => 'text/html']
         );
