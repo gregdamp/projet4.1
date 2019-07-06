@@ -13,8 +13,6 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 
-
-
 class SiteController extends AbstractController
 
 {
@@ -22,7 +20,6 @@ class SiteController extends AbstractController
      * @Route("/site", name="site")
      */
     public function index() {
-
         return $this->render('site/index.html.twig', [
             'controller_name' => 'SiteController',
         ]);
@@ -33,24 +30,60 @@ class SiteController extends AbstractController
      */
     public function home(Request $request) {
 
-        $date = $request->request->get('date');
-        /* echo '<pre>';
-        print_r($request);
-        echo '</pre>';
-        echo('date='.$date); */
-        
+        $date = null;
 
-        $TicketsStock = $this->getDoctrine()
+        if(isset($_POST['date'])) {
+            $strtotime = strtotime($_POST['date']);
+            $date = date('Y-m-d',$strtotime);
+        }
+        else {
+            $date = '2019-01-13';
+        }
+
+        $TicketsDate = $this->getDoctrine()
             ->getRepository('App:Billets')
             ->TicketsByDate($date);
-        //var_dump($TicketsStock);
         
         $SoldOutDate = $this->getDoctrine()
             ->getRepository('App:Billets')
             ->SoldOutDate();
 
         return $this->render('site/home.html.twig', array(
-            'TicketsStock'=>1000 - $TicketsStock, 'SoldOutDate'=> $SoldOutDate) );        
+            'TicketsDate'=>1000-$TicketsDate, 'SoldOutDate' => $SoldOutDate) );
+        
+    }
+
+    /**
+     * @route("/ajax", name="ajax")
+     */
+    public function ajax(Request $request) {
+
+        $date = null;
+
+        if(isset($_POST['date'])) {
+            $strtotime = strtotime($_POST['date']);
+            $date = date('Y-m-d',$strtotime);
+        }
+        else {
+            $date = '2019-01-13';
+        }
+
+        $TicketsDate = $this->getDoctrine()
+            ->getRepository('App:Billets')
+            ->TicketsByDate($date);
+
+        $SoldOutDate = $this->getDoctrine()
+            ->getRepository('App:Billets')
+            ->SoldOutDate();
+
+        $response = new Response(
+            1000 - $TicketsDate,
+            Response::HTTP_OK,
+            ['content-type' => 'text/html']
+        );
+
+        return $response;
+
     }
 
     /**
@@ -177,6 +210,5 @@ class SiteController extends AbstractController
 
         return $this->render('site/confirmation.html.twig');
     }
-
 
 }
