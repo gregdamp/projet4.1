@@ -13,20 +13,38 @@
     $('#calendar').datepicker({
       beforeShowDay: function(date) {
         var day = jQuery.datepicker.formatDate('dd-mm-yy', date);
-        return [!~$.inArray(day, exclude) && (date.getDay() != 0) && (date.getDay() != 2)];
+        return [!~$.inArray(day, exclude) && (date.getDay() != 0)  && (date.getDay() != 2)];
       },
       minDate: today,
       onSelect: function(date, instance) {
         $.ajax({
-          url : '/',
+          url : '/ajax',
           type : 'POST',
-          data : {
-            'date':date,
-            'name':'alex'
-          },
-          dataType : 'json',
-          success : function(code_html, statut){
-            console.log(statut);
+          data : {'date':date},
+          dataType : 'html',
+          success : function(nbBillets, statut){
+            console.log('nombre de billets ' + nbBillets);
+            //reconstruire la liste drop down
+              if(parseInt(nbBillets) > 5){
+                
+                $('.select').empty();
+
+                var maxticket = 6;
+
+                for (var i = 0; i <= maxticket; i++) {
+                  $('.select').append('<option value="' + i + '">' + i + '</option>')
+                }
+              } 
+              else {              
+                $('.select').empty();
+
+                var maxticket = parseInt(nbBillets);
+
+                for (var i = 0; i <= maxticket; i++) {
+                  $('.select').append('<option value="' + i + '">' + i + '</option>')
+                }
+                  console.log('processer la liste')
+              }
           },
  
           error : function(resultat, statut, erreur){
@@ -59,9 +77,8 @@
                     <h6 class="card-subtitle text-muted">Du 7 novembre 2018 au 18 février 2019</h6>
                 </div>
             </div>
-            <div id="img_home" style="overflow:hidden; height: 200px;">
-              <img style="width: 100%; display: block; margin: -100px 0 0 0;" alt="Card image" src="https://pbs.twimg.com/media/DkfWRClWwAAPElR.jpg:large"/>
-            </div>
+            <img style="height: 200px; width: 100%; display: block;" alt="Card image" src="campana.jpg">
+
         </div>
         <div class="col-md-1"></div>
     </div>    
@@ -69,6 +86,7 @@
     <div class="row">
         <div class="col-md-3"></div>
             <div class="col-md-6">
+
 
 
   {# Mail #}
@@ -83,14 +101,13 @@
   {# Calendrier #}
     <div>
       <legend>Calendrier</legend>
-      {# <input type="date" id="start" name="trip-start" value="22-11-2018" min="01-01-2018" max="31-12-2018"> #}
-      <input type="text" id="calendar" name="calendar" required/>
+      <input type="text" id="calendar" name="calendar" required readonly/>
       <p>Le musée est fermé tous les mardi ainsi que le 1er mai, le 1er novembre et le 25 décembre.<br>
       La réservation en ligne n'est pas disponible pour les dimanche ainsi que les jours fériés ainsi que les jours de grosse affluence.</p>
     </div>
 
   {# Horaire #}
-    <fieldset class="form-group">
+  <fieldset class="form-group">
     <legend>Horaire</legend>
     <div class="form-check">
       <label class="form-check-label">
@@ -115,14 +132,9 @@
   <div class="form-group">
     <legend>Tarifs</legend>
     <label for="normal">Tarif "normal". <b>16€</b></label>
-    <select class="form-control select" id="normal" name="normal" >
-
+    <select class="form-control select" id="normal" name="normal">
       {% if TicketsDate > 5 %}
         {% for normal in range(0, 6) %}
-          <option value="{{ normal }}">{{ normal }}</option>
-        {% endfor %}
-      {% else %}
-        {% for normal in range (0, TicketsDate) %}
           <option value="{{ normal }}">{{ normal }}</option>
         {% endfor %}
       {% endif %}
@@ -132,13 +144,8 @@
   <div class="form-group">
     <label for="enfant">Tarif "enfant" (4 à 12 ans), gratuit pour les moins de 4 ans. <b>8€</b></label>
     <select class="form-control select" id="enfant" name="enfant">
-      
       {% if TicketsDate > 5 %}
         {% for enfant in range(0, 6) %}
-          <option value="{{ enfant }}">{{ enfant }}</option>
-        {% endfor %}
-      {% else %}
-        {% for enfant in range (0, TicketsDate) %}
           <option value="{{ enfant }}">{{ enfant }}</option>
         {% endfor %}
       {% endif %}
@@ -147,33 +154,31 @@
 
   <div class="form-group">
     <label for="senior">Tarif "Senior" (60 ans). <b>12€</b></label>
-    <select class="form-control select" id="senior" name="senior" />
-      
+    <select class="form-control select" id="senior" name="senior">
       {% if TicketsDate > 5 %}
         {% for senior in range(0, 6) %}
-          <option value="{{ senior }}">{{ senior }}</option>
-        {% endfor %}
-      {% else %}
-        {% for senior in range (0, TicketsDate) %}
           <option value="{{ senior }}">{{ senior }}</option>
         {% endfor %}
       {% endif %}      
     </select>
   </div>
 
+  <input type="text" id="random" name="code" value="" hidden>
   <div class="alert alert-dismissible alert-danger" id="test" style="display:none;">
-      <button class="close" type="button" data-dismiss="alert">&times;</button>
-      Veuillez sélectionner 1 billet au minimum.
-  </div>
-    <button type="submit" class="btn btn-primary btn-lg submitHome">Suivant</button>
+    <button class="close" type="button" data-dismiss="alert">&times;</button>
+    Veuillez sélectionner 1 billet au minimum.
+</div>
+
+  <p>Au-delà de 6 billets, contactez le louvre pour un tarif de groupe. </p>
+
+  <div></div>
+  <button type="submit" class="btn btn-primary btn-lg submitHome">Suivant</button>
   </div>
 </form>
       </div>
     <div class="col-md-3"></div>
   </div>
 </div>
-
-
 
 <script>
 
@@ -235,8 +240,15 @@
     });
   });  
 </script>
-
-
-
-
+<script>
+  $( document ).ready(function(){
+    var text = "";
+    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    
+    for (var i = 0; i < 5; i++)
+      text += possible.charAt(Math.floor(Math.random() * possible.length));
+    
+    return $( "#random" ).val(text);
+  });
+</script>
 {% endblock %}
