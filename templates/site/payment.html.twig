@@ -1,0 +1,84 @@
+{% extends 'base.html.twig' %}
+
+{% block head %}
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+<script src="https://js.stripe.com/v3/"></script>
+
+{% endblock %}
+
+{% block body %}
+<div class="container">
+
+    <h2>Paiement en ligne</h2><br />
+    <h3>Récapitulatif de vote commande</h3>
+    <h4>Billets normaux</h4>
+    <div>
+        <ul>
+            {% for i in range(1, 6) %}
+                {% if app.request.request.get('nomNormal' ~ i) == true %}
+                    <li>
+                        {{ app.request.request.get('nomNormal' ~ i) }}
+                        {{ app.request.request.get('prenomNormal' ~ i) }}
+                        {{ app.request.request.get('paysNormal' ~ i) }}
+                        {{ app.request.request.get('naissanceNormal' ~ i) }}
+                    </li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+    </div>
+
+    <h4>Billets enfants</h4>
+    <div>
+        <ul>
+            {% for i in range(1, 6) %}
+                {% if app.request.request.get('nomEnfant' ~ i) == true %}
+                    <li>
+                        {{ app.request.request.get('nomEnfant' ~ i) }}
+                        {{ app.request.request.get('prenomEnfant' ~ i) }}
+                        {{ app.request.request.get('paysEnfant' ~ i) }}
+                        {{ app.request.request.get('naissanceEnfant' ~ i) }}
+                    </li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+    </div>
+
+    <h4>Billets seniors</h4>
+    <div>
+        <ul>
+            {% for i in range(1, 6) %}
+                {% if app.request.request.get('nomSenior' ~ i) == true %}
+                    <li>
+                        {{ app.request.request.get('nomSenior' ~ i) }}
+                        {{ app.request.request.get('prenomSenior' ~ i) }}
+                        {{ app.request.request.get('paysSenior' ~ i) }}
+                        {{ app.request.request.get('naissanceSenior' ~ i) }}
+                    </li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+    </div>
+
+    <h4>Tarif total: {{ app.request.request.get('hiddenPrice')}} </h4>
+</div>
+
+<form action="{{ path('emails') }}" method="post" name="emailtest" id="emailtest">
+                <script                       
+                        src="https://checkout.stripe.com/checkout.js"
+                        class="stripe-button"
+                        data-key="pk_test_uBV6waL3ct4i13i582t5tPu6"
+                        data-amount="{{ app.request.request.get('hiddenPrice') * 100 }}"
+                        data-name="stripe.com"
+                        data-description="Widget"
+                        data-image="https://stripe.com/img/documentation/checkout/marketplace.png"
+                        data-locale="auto"
+                        data-currency="eur">
+                </script>
+</form>
+
+
+
+{% endblock %}
