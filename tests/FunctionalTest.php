@@ -14,7 +14,8 @@ class FunctionalTest extends WebTestCase
     {
         $client = static::createClient();
 
-        $crawler = $client->request('get', '/');
+        $client->request('GET', '/site');
+       // var_dump($client);
 
         $this->assertEquals(200, $client->getResponse()->getStatusCode());
        
