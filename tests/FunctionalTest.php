@@ -10,14 +10,24 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 class FunctionalTest extends WebTestCase
 
 {
-    public function testIndex()
+   public function testIndex()
+    {
+        $client = static::createClient();
+
+        $client->request('GET', '/');
+       var_dump($_ENV);
+
+        $this->assertEquals(200, $client->getResponse()->getStatusCode());
+       
+    }
+
+    public function testSite()
     {
         $client = static::createClient();
 
         $client->request('GET', '/site');
-       // var_dump($client);
 
         $this->assertEquals(200, $client->getResponse()->getStatusCode());
-       
+
     }
 }

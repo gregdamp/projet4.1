@@ -30,6 +30,8 @@ class SiteController extends AbstractController
      */
     public function home(Request $request) {
 
+        //print_r($_ENV);die();
+
         $date = null;
 
         if(isset($_POST['date'])) {
