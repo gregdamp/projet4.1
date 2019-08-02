@@ -90,7 +90,7 @@
         "phpunit-bridge": {
             "options": {"symlink": false},
             "type": "path",
-            "url": "C:\\wamp64\\www\\projet4.1\\vendor\\symfony\\phpunit-bridge"
+            "url": "C:\\wamp64\\www\\projet4\\vendor\\symfony\\phpunit-bridge"
         }
     }
 }

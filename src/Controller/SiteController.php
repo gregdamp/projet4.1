@@ -124,11 +124,12 @@ class SiteController extends AbstractController
         // Get the credit card details submitted by the form
         
         $token = $request->request->get('stripeToken');
-
+        $amount = $request->request->get('hiddenPrice') * 100;
+        echo($amount);
         // Create a charge: this will charge the user's card
             
             $charge = \Stripe\Charge::create(array(
-                "amount" => 1000, // Amount in cents
+                "amount" => abs($amount), // Amount in cents
                 "currency" => "eur",
                 "source" => $token,
                 "description" => "Paiement Stripe - OpenClassrooms Exemple"
@@ -176,6 +177,7 @@ class SiteController extends AbstractController
         $price = $request->request->get('hiddenPrice', '');
         $session->set('price', $price);
     
+        var_dump($request);
     
         $i = 1;
         while ($i <= 6) {

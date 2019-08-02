@@ -676,7 +676,7 @@
 
 
         <p class="total"></p>
-        <input type="text" class="total" name="hiddenPrice" value="" hidden>
+        <input type="text" class="total" id="total" name="hiddenPrice" value="" hidden>
         
         <button type="submit" class="btn btn-primary btn-lg" id="submitDetail">Suivant</button>
 
@@ -697,7 +697,8 @@ $(document).ready(function(){
         });
         var Tot = sousTot - ((compteurNormal * 6) + (compteurSenior * 2));
         $( "p.total" ).text("Prix total: " + Tot +"€");
-        $( "input.total" ).val(Tot);
+        document.getElementById("total").value = Tot;
+        
     }
     
     Prix();
