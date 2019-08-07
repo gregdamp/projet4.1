@@ -5,60 +5,6 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
-<script>
-  var today = new Date();
-  var exclude = ["{% for row in SoldOutDate %}{{row.date|date('d-m-Y')}}{{ not loop.last ? '\",\"' }}{% endfor %}", "25-12-2018", "01-01-2018", "02-04-2019", "01-05-2019", "08-05-2019", "10-05-2019", "21-05-2019", "14-07-2019", "15-08-2019", "01-11-2019", "11-11-2019", "25-12-2019"]
-
-  $(document).ready(function() {
-    $('#calendar').datepicker({
-      beforeShowDay: function(date) {
-        var day = jQuery.datepicker.formatDate('dd-mm-yy', date);
-        return [!~$.inArray(day, exclude) && (date.getDay() != 0)  && (date.getDay() != 2)];
-      },
-      minDate: today,
-      onSelect: function(date, instance) {
-        $.ajax({
-          url : '/ajax',
-          type : 'POST',
-          data : {'date':date},
-          dataType : 'html',
-          success : function(nbBillets, statut){
-            console.log('nombre de billets ' + nbBillets);
-            //reconstruire la liste drop down
-              if(parseInt(nbBillets) > 5){
-                
-                $('.select').empty();
-
-                var maxticket = 6;
-
-                for (var i = 0; i <= maxticket; i++) {
-                  $('.select').append('<option value="' + i + '">' + i + '</option>')
-                }
-              } 
-              else {              
-                $('.select').empty();
-
-                var maxticket = parseInt(nbBillets);
-
-                for (var i = 0; i <= maxticket; i++) {
-                  $('.select').append('<option value="' + i + '">' + i + '</option>')
-                }
-                  console.log('processer la liste')
-              }
-          },
- 
-          error : function(resultat, statut, erreur){
-          
-          },
- 
-          complete : function(resultat, statut){
- 
-          }          
-        });
-      }
-    });
-  });
-</script>
 
 {% endblock %}
 
@@ -71,14 +17,15 @@
         <div class="col-md-10">
 
             <div class="card mb-3">
-                <h3 class="card-header">Exposition Un rêve d'Italie.</h3>
+                <h3 class="card-header">Mystères aux Tuileries</h3>
                 <div class="card-body">
-                    <h5 class="card-title">La collection du marquis Campana.</h5>
-                    <h6 class="card-subtitle text-muted">Du 7 novembre 2018 au 18 février 2019</h6>
+                    <h5 class="card-title"> L’adventure game du Louvre revient.</h5>
+                    <h6 class="card-subtitle text-muted">Du 6 juillet au 25 août</h6>
                 </div>
             </div>
-            <img style="height: 200px; width: 100%; display: block;" alt="Card image" src="campana.jpg">
-
+            <div id="imgoverflow">
+              <img id="louvreimg" alt="Card image" src="/assets/img/louvre-carrousel-mysteres-aux-tuileries-l-adventure-game-du-louvre.jpg">
+            </div>
         </div>
         <div class="col-md-1"></div>
     </div>    
@@ -103,7 +50,7 @@
       <legend>Calendrier</legend>
       <input type="text" id="calendar" name="calendar" required readonly/>
       <p>Le musée est fermé tous les mardi ainsi que le 1er mai, le 1er novembre et le 25 décembre.<br>
-      La réservation en ligne n'est pas disponible pour les dimanche ainsi que les jours fériés ainsi que les jours de grosse affluence.</p>
+      La réservation en ligne n'est pas disponible pour les dimanche et les jours fériés ainsi que les jours de grosse affluence.</p>
     </div>
 
   {# Horaire #}
@@ -168,7 +115,10 @@
     <button class="close" type="button" data-dismiss="alert">&times;</button>
     Veuillez sélectionner 1 billet au minimum.
 </div>
-
+<div class="alert alert-dismissible alert-danger" id="choisir-date" style="display:none;">
+    <button class="close" type="button" data-dismiss="alert">&times;</button>
+    Veuillez sélectionner une date.
+</div>
   <p>Au-delà de 6 billets, contactez le louvre pour un tarif de groupe. </p>
 
   <div></div>
@@ -181,43 +131,94 @@
 </div>
 
 <script>
-
-  var TicketsDate = '{{ TicketsDate }}';
-  var max;
-
-  if(TicketsDate > 5) {
-    max = 6;
-  }
-    
-  else {
-    max = TicketsDate;
-  }
-    
-  $( document ).ready(function() {   
-    $(".select").change(function(){
-    
-      //reset
-      for (var i = max; i >= 0; i--) {
-        $("#normal option[value='"+i+"']").show();
-        $("#enfant option[value='"+i+"']").show();
-        $("#senior option[value='"+i+"']").show();
-      }
-    
-      //hide unwanted values depending on other selects
-      for (var i = max; i > (max - (parseInt($( "#enfant" ).val()) + parseInt($( "#senior" ).val()))); i--) {
-        $("#normal option[value='"+i+"']").hide();
-      }
-    
-      for (var i = max; i > (max - (parseInt($( "#normal" ).val()) + parseInt($( "#senior" ).val()))); i--) {
-        $("#enfant option[value='"+i+"']").hide();
-      }
-    
-      for (var i = max; i > (max - (parseInt($( "#enfant" ).val()) + parseInt($( "#normal" ).val()))); i--) {
-        $("#senior option[value='"+i+"']").hide();
-      }
+    var today = new Date();
+    var exclude = ["{% for row in SoldOutDate %}{{row.date|date('d-m-Y')}}{{ not loop.last ? '\",\"' }}{% endfor %}", "25-12-2018", "01-01-2018", "02-04-2019", "01-05-2019", "08-05-2019", "10-05-2019", "21-05-2019", "14-07-2019", "15-08-2019", "01-11-2019", "11-11-2019", "25-12-2019"]
+  
+    $(document).ready(function() {
+      $('#calendar').datepicker({
+        beforeShowDay: function(date) {
+          var day = jQuery.datepicker.formatDate('dd-mm-yy', date);
+          return [!~$.inArray(day, exclude) && (date.getDay() != 0)  && (date.getDay() != 2)];
+        },
+        minDate: today,
+        onSelect: function(date, instance) {
+          $.ajax({
+            url : '/ajax',
+            type : 'POST',
+            data : {'date':date},
+            dataType : 'html',
+            success : function(nbBillets, statut){
+              console.log('nombre de billets ' + nbBillets);
+              //reconstruire la liste drop down
+                if(parseInt(nbBillets) > 5){
+                  
+                  $('.select').empty();
+  
+                  var maxticket = 6;
+  
+                  for (var i = 0; i <= maxticket; i++) {
+                    $('.select').append('<option value="' + i + '">' + i + '</option>')
+                  }
+                } 
+                else {              
+                  $('.select').empty();
+  
+                  var maxticket = parseInt(nbBillets);
+  
+                  for (var i = 0; i <= maxticket; i++) {
+                    $('.select').append('<option value="' + i + '">' + i + '</option>')
+                  }
+                    console.log('processer la liste')
+                }
+                $( document ).ready(function() {   
+                  $(".select").change(function(){
+                  
+                    //reset
+                    for (var i = maxticket; i >= 0; i--) {
+                      $("#normal option[value='"+i+"']").show();
+                      $("#enfant option[value='"+i+"']").show();
+                      $("#senior option[value='"+i+"']").show();
+                    }
+                for (var i = maxticket; i > (maxticket - (parseInt($( "#enfant" ).val()) + parseInt($( "#senior" ).val()))); i--) {
+                  $("#normal option[value='"+i+"']").hide();
+                }
+              
+                for (var i = maxticket; i > (maxticket - (parseInt($( "#normal" ).val()) + parseInt($( "#senior" ).val()))); i--) {
+                  $("#enfant option[value='"+i+"']").hide();
+                }
+              
+                for (var i = maxticket; i > (maxticket - (parseInt($( "#enfant" ).val()) + parseInt($( "#normal" ).val()))); i--) {
+                  $("#senior option[value='"+i+"']").hide();
+                }
+              });
+            });
+            },
+   
+            error : function(resultat, statut, erreur){
+            
+            },
+   
+            complete : function(resultat, statut){
+   
+            }          
+          });
+        }
+      });
     });
-  });
-
+  </script>
+  <script>
+      //select date
+      $( document ).ready(function() {   
+        $(".submitHome").click(function(event){
+          var dateTrue = $( "#calendar" ).val();
+          if ( dateTrue == 0) {
+            event.preventDefault();
+            $('#choisir-date').css('display', '');
+          }   
+        });
+      });
+        
+    </script>
 </script>
 <script>
   //min value of 1 ticket
@@ -233,10 +234,11 @@
     
 </script>
 <script>
-  //close alert message of min value ticket
+  //close alert messages
   $( document ).ready(function(){
     $('.close').click(function(){            
       $('#test').css('display', 'none');
+      $('#choisir-date').css('display', 'none');
     });
   });  
 </script>

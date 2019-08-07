@@ -63,9 +63,10 @@
     </div>
 
     <h4>Tarif total: {{ app.request.request.get('hiddenPrice')}} </h4>
-</div>
+
 
 <form action="{{ path('emails') }}" method="post" name="emailtest" id="emailtest">
+                <input type="number" class="total" id="totalStripe" name="hiddenPrice" value="{{ app.request.request.get('hiddenPrice')}}" hidden>
                 <script                       
                         src="https://checkout.stripe.com/checkout.js"
                         class="stripe-button"
@@ -78,7 +79,7 @@
                         data-currency="eur">
                 </script>
 </form>
-
+</div>
 
 
 {% endblock %}

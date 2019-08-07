@@ -1,3 +1,4 @@
+
 .pays
 {
     width: 10%;
@@ -5,6 +6,24 @@
 .div-spacer
 {
     margin-bottom: 10px;
+}
+#submitDetail
+{
+    float:left;
+}
+#imgoverflow
+{
+    overflow:hidden;
+    margin-top: -100px;
+    margin-bottom: 50px;
+}
+#louvreimg
+{
+    margin:-100px 0;
+}
+.card-header
+{
+    margin-left:0;
 }
 @media only screen and (max-width: 1024px) {
     .nom, .prenom, .pays, .naissance
@@ -28,6 +47,14 @@
     {
         font-weight:bold;
     }
+    #louvreimg
+    {
+    margin-left:-200px;
+    }
+    .display-3 
+    {
+        font-size: 4rem;
+    }
 }
 
 @media only screen and (max-width: 600px) {
@@ -43,10 +70,27 @@
     {
         margin-left:0;
     }
+    #louvreimg
+    {
+    margin-left:-200px;
+    }
+    .display-3 
+    {
+        font-size: 3.5rem;
+    }
 }
 @media only screen and (max-width: 450px) {
     .nom, .prenom, .pays, .naissance
     {
         width: 100%;
+    }
+    #louvreimg
+    {
+    margin-left:-400px;
+    }
+    .display-3 
+    {
+        font-size: 3rem;
+        text-align:center;
     }
 }

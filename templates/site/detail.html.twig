@@ -223,7 +223,9 @@
                                     <option value="Zimbabwe">Zimbabwe</option>
                                     </select>
                                 Date de naissance: <input type="date" class="naissance" name="naissanceNormal{{ i }}" required/>
+                            {% if app.request.request.get('optionsRadios') == 'option1' %}    
                                 Tarif réduit: <input type="checkbox" name="reductionNormal" value="reduction" class="reductionNormal"><br>
+                            {% endif %}    
                             </div>           
                 {%  endif %}
                 {%- if i == app.request.request.get('normal') %}        
@@ -660,7 +662,9 @@
                                     <option value="Zimbabwe">Zimbabwe</option>
                                     </select>
                                 Date de naissance: <input type="date" class="naissance" name="naissanceSenior{{ i }}" required>
+                            {% if app.request.request.get('optionsRadios') == 'option1' %}
                                 Tarif réduit: <input type="checkbox" name="reductionSenior" value="reduction" class="reductionSenior"><br>
+                            {% endif %}    
                     </div>
                 {%  endif %}
                 {%- if i == app.request.request.get('senior') %}
@@ -676,7 +680,7 @@
 
 
         <p class="total"></p>
-        <input type="text" class="total" id="total" name="hiddenPrice" value="" hidden>
+        <input type="number" class="total" id="total" name="hiddenPrice" value="" style="visibility:hidden">
         
         <button type="submit" class="btn btn-primary btn-lg" id="submitDetail">Suivant</button>
 
@@ -697,7 +701,7 @@ $(document).ready(function(){
         });
         var Tot = sousTot - ((compteurNormal * 6) + (compteurSenior * 2));
         $( "p.total" ).text("Prix total: " + Tot +"€");
-        document.getElementById("total").value = Tot;
+        $('#total').attr('value', Tot);
         
     }
     
